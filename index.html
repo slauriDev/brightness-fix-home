@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Brightness Fix for GSI</title>
   <style>
-    /* ===== CSS переменные ===== */
+    /* ===== CSS переменные (Material Design 3) ===== */
     :root {
       --md-surface: #1c1b1f;
       --md-surface-container: #2b2930;
@@ -15,11 +15,8 @@
       --md-on-surface: #e6e0e9;
       --md-on-surface-variant: #cac4cf;
       --md-outline: #938f99;
-      --md-shadow: rgba(0, 0, 0, 0.4);
-      --md-elevation: 0 4px 12px rgba(0,0,0,0.3);
-      --md-radius: 28px;
+      --md-shadow: 0 4px 12px rgba(0,0,0,0.3);
       --md-radius-card: 16px;
-      --bg-overlay: rgba(0, 0, 0, 0.55);
     }
     [data-theme="light"] {
       --md-surface: #fef7ff;
@@ -30,10 +27,9 @@
       --md-on-surface: #1d1b20;
       --md-on-surface-variant: #49454f;
       --md-outline: #79747e;
-      --md-shadow: rgba(0, 0, 0, 0.1);
-      --md-elevation: 0 4px 12px rgba(0,0,0,0.08);
-      --bg-overlay: rgba(255, 255, 255, 0.55);
+      --md-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: "Google Sans", system-ui, -apple-system, sans-serif;
@@ -65,7 +61,6 @@
       border-radius: 100px;
       font-size: 0.75rem;
       font-weight: 500;
-      letter-spacing: 0.3px;
       border: 1px solid var(--md-outline);
     }
     .controls {
@@ -84,29 +79,21 @@
       border-radius: 100px;
       border: 1px solid var(--md-outline);
       user-select: none;
+      transition: background 0.2s;
     }
-    .theme-toggle:hover, .lang-toggle:hover { background: var(--md-outline); }
+    .theme-toggle:hover, .lang-toggle:hover {
+      background: var(--md-outline);
+    }
 
     /* ===== Карточка ===== */
     .card {
-      position: relative;
+      background: var(--md-surface-container);
       border-radius: var(--md-radius-card);
       padding: 2rem;
       margin-bottom: 1.5rem;
-      box-shadow: var(--md-elevation);
-      overflow: hidden;
+      box-shadow: var(--md-shadow);
       transition: background 0.3s, box-shadow 0.3s;
-      background-color: var(--md-surface-container);
     }
-    .card-bg {
-      position: absolute; top: 0; left: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      filter: brightness(0.4);
-      z-index: 0;
-      transition: filter 0.3s;
-    }
-    .card-content { position: relative; z-index: 1; }
 
     h1 { font-size: 2.2rem; font-weight: 600; letter-spacing: -0.3px; }
     h2 { font-size: 1.4rem; font-weight: 500; margin: 1.5rem 0 0.75rem 0; }
@@ -123,7 +110,8 @@
       margin: 1rem 0 0.5rem 0;
     }
     .screenshots img {
-      max-width: 180px; width: 100%;
+      max-width: 180px;
+      width: 100%;
       border-radius: var(--md-radius-card);
       border: 1px solid var(--md-outline);
       background: var(--md-surface);
@@ -132,10 +120,16 @@
     .screenshots img:hover { transform: scale(1.02); }
 
     .btn {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      background: var(--md-primary); color: var(--md-on-primary);
-      padding: 0.8rem 2rem; border-radius: 100px;
-      font-weight: 600; border: none; cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--md-primary);
+      color: var(--md-on-primary);
+      padding: 0.8rem 2rem;
+      border-radius: 100px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
       transition: filter 0.2s, box-shadow 0.2s;
       box-shadow: 0 2px 8px rgba(103, 80, 164, 0.3);
     }
@@ -144,14 +138,20 @@
       box-shadow: 0 4px 16px rgba(103, 80, 164, 0.4);
       text-decoration: none;
     }
+
     .contacts {
-      display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 0.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-top: 0.5rem;
     }
     .footer {
-      margin-top: 2.5rem; font-size: 0.85rem;
+      margin-top: 2.5rem;
+      font-size: 0.85rem;
       color: var(--md-outline);
       border-top: 1px solid var(--md-outline);
-      padding-top: 1.5rem; text-align: center;
+      padding-top: 1.5rem;
+      text-align: center;
     }
     @media (max-width: 600px) {
       body { padding: 1rem; }
@@ -184,7 +184,6 @@
 
   <!-- Карточка 1: Описание (русский) -->
   <div class="card" id="card-desc-ru">
-    <img class="card-bg" src="images/bg1.jpg" alt="фон" />
     <div class="card-content">
       <h1>Brightness Fix for GSI</h1>
       <p>
@@ -202,7 +201,6 @@
 
   <!-- Карточка 1: Описание (английский) -->
   <div class="card" id="card-desc-en" style="display:none;">
-    <img class="card-bg" src="images/bg1.jpg" alt="bg" />
     <div class="card-content">
       <h1>Brightness Fix for GSI</h1>
       <p>
@@ -218,9 +216,8 @@
     </div>
   </div>
 
-  <!-- Карточка 2: Скриншоты (русский) -->
+  <!-- Карточка 2: Скриншоты -->
   <div class="card" id="card-screens-ru">
-    <img class="card-bg" src="images/bg2.jpg" alt="фон" />
     <div class="card-content">
       <h2>📸 Скриншоты</h2>
       <div class="screenshots">
@@ -235,7 +232,6 @@
 
   <!-- Карточка 2: Скриншоты (английский) -->
   <div class="card" id="card-screens-en" style="display:none;">
-    <img class="card-bg" src="images/bg2.jpg" alt="bg" />
     <div class="card-content">
       <h2>📸 Screenshots</h2>
       <div class="screenshots">
@@ -248,9 +244,8 @@
     </div>
   </div>
 
-  <!-- Карточка 3: Скачать (русский) -->
+  <!-- Карточка 3: Скачать -->
   <div class="card" id="card-dl-ru">
-    <img class="card-bg" src="images/bg3.jpg" alt="фон" />
     <div class="card-content">
       <h2>⬇️ Скачать</h2>
       <p>
@@ -265,7 +260,6 @@
 
   <!-- Карточка 3: Скачать (английский) -->
   <div class="card" id="card-dl-en" style="display:none;">
-    <img class="card-bg" src="images/bg3.jpg" alt="bg" />
     <div class="card-content">
       <h2>⬇️ Download</h2>
       <p>
@@ -278,9 +272,8 @@
     </div>
   </div>
 
-  <!-- Карточка 4: Контакты (русский) -->
+  <!-- Карточка 4: Контакты -->
   <div class="card" id="card-contacts-ru">
-    <img class="card-bg" src="images/bg4.jpg" alt="фон" />
     <div class="card-content">
       <h2>📬 Контакты</h2>
       <p>
@@ -296,7 +289,6 @@
 
   <!-- Карточка 4: Контакты (английский) -->
   <div class="card" id="card-contacts-en" style="display:none;">
-    <img class="card-bg" src="images/bg4.jpg" alt="bg" />
     <div class="card-content">
       <h2>📬 Contacts</h2>
       <p>
@@ -324,25 +316,19 @@
     const themeLabel = document.getElementById('themeLabel');
     const html = document.documentElement;
 
+    function updateTheme(theme) {
+      html.setAttribute('data-theme', theme);
+      themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
+      themeLabel.textContent = theme === 'dark' ? 'Тёмная' : 'Светлая';
+      localStorage.setItem('theme', theme);
+    }
+
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
-      html.setAttribute('data-theme', savedTheme);
       updateTheme(savedTheme);
     } else {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       updateTheme(prefersDark ? 'dark' : 'light');
-    }
-
-    function updateTheme(theme) {
-      html.setAttribute('data-theme', theme);
-      if (theme === 'dark') {
-        themeIcon.textContent = '🌙';
-        themeLabel.textContent = 'Тёмная';
-      } else {
-        themeIcon.textContent = '☀️';
-        themeLabel.textContent = 'Светлая';
-      }
-      localStorage.setItem('theme', theme);
     }
 
     themeToggle.addEventListener('click', function() {
@@ -356,15 +342,17 @@
     let currentLang = localStorage.getItem('lang') || 'ru';
 
     function updateLanguage(lang) {
-      const ruElements = ['card-desc-ru', 'card-screens-ru', 'card-dl-ru', 'card-contacts-ru'];
-      const enElements = ['card-desc-en', 'card-screens-en', 'card-dl-en', 'card-contacts-en'];
+      const pairs = {
+        'card-desc': ['ru', 'en'],
+        'card-screens': ['ru', 'en'],
+        'card-dl': ['ru', 'en'],
+        'card-contacts': ['ru', 'en']
+      };
 
-      ruElements.forEach(id => {
-        document.getElementById(id).style.display = (lang === 'ru') ? 'block' : 'none';
-      });
-      enElements.forEach(id => {
-        document.getElementById(id).style.display = (lang === 'en') ? 'block' : 'none';
-      });
+      for (const [base, langs] of Object.entries(pairs)) {
+        document.getElementById(`${base}-${langs[0]}`).style.display = (lang === 'ru') ? 'block' : 'none';
+        document.getElementById(`${base}-${langs[1]}`).style.display = (lang === 'en') ? 'block' : 'none';
+      }
 
       langLabel.textContent = (lang === 'ru') ? 'РУ' : 'EN';
       localStorage.setItem('lang', lang);
@@ -375,7 +363,6 @@
       updateLanguage(currentLang === 'ru' ? 'en' : 'ru');
     });
 
-    // Устанавливаем язык при загрузке
     updateLanguage(currentLang);
   })();
 </script>
