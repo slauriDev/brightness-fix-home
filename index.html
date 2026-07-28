@@ -173,11 +173,11 @@
     <div class="controls">
       <div class="lang-toggle" id="langToggle" role="button" tabindex="0">
         <span id="langIcon">🌐</span>
-        <span class="label" id="langLabel">РУ</span>
+        <span class="label" id="langLabel">RU</span>
       </div>
       <div class="theme-toggle" id="themeToggle" role="button" tabindex="0">
         <span id="themeIcon">🌙</span>
-        <span class="label" id="themeLabel">Тёмная</span>
+        <span class="label" id="themeLabel">Dark</span>
       </div>
     </div>
   </div>
@@ -319,7 +319,7 @@
     function updateTheme(theme) {
       html.setAttribute('data-theme', theme);
       themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
-      themeLabel.textContent = theme === 'dark' ? 'Тёмная' : 'Светлая';
+      themeLabel.textContent = theme === 'dark' ? 'Dark' : 'Light';
       localStorage.setItem('theme', theme);
     }
 
@@ -354,7 +354,7 @@
         document.getElementById(`${base}-${langs[1]}`).style.display = (lang === 'en') ? 'block' : 'none';
       }
 
-      langLabel.textContent = (lang === 'ru') ? 'РУ' : 'EN';
+      langLabel.textContent = (lang === 'ru') ? 'RU' : 'EN';
       localStorage.setItem('lang', lang);
       currentLang = lang;
     }
