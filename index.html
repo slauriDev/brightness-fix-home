@@ -177,7 +177,7 @@
       </div>
       <div class="theme-toggle" id="themeToggle" role="button" tabindex="0">
         <span id="themeIcon">🌙</span>
-        <span class="label" id="themeLabel">Dark</span>
+        <span class="label" id="themeLabel"></span>
       </div>
     </div>
   </div>
@@ -313,13 +313,11 @@
     // ===== Переключатель темы =====
     const themeToggle = document.getElementById('themeToggle');
     const themeIcon = document.getElementById('themeIcon');
-    const themeLabel = document.getElementById('themeLabel');
     const html = document.documentElement;
 
     function updateTheme(theme) {
       html.setAttribute('data-theme', theme);
       themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
-      themeLabel.textContent = theme === 'dark' ? 'Dark' : 'Light';
       localStorage.setItem('theme', theme);
     }
 
