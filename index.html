@@ -812,11 +812,6 @@
 
         document.getElementById("menuSettingsLabel").textContent =
           lang === "ru" ? "Настройки" : "Settings";
-        
-        menuLinks.forEach((link, index) => {
-          link.lastChild.textContent =
-            " " + (lang === "ru" ? ruNames[index] : enNames[index]);
-        });
 
         themeLabel.textContent =
           html.getAttribute("data-theme") === "dark"
