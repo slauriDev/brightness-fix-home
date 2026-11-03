@@ -854,10 +854,7 @@
         );
       }
 
-      menuButton.addEventListener("click", () => {
-        console.log("Burger clicked");
-        toggleMenu();
-      });
+      menuButton.addEventListener("click", toggleMenu);
 
       document.querySelectorAll("[data-menu-link]").forEach(link => {
         link.addEventListener("click", closeMenu);
