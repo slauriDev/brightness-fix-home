@@ -555,23 +555,6 @@
     </div>
 
     <nav class="menu-panel" id="menuPanel" aria-label="Главное меню">
-      <div class="menu-label" id="menuNavigationLabel">Навигация</div>
-
-      <a class="menu-link" href="#top" data-menu-link>
-        <span>⌂</span> Главная
-      </a>
-      <a class="menu-link" href="#screenshots" data-menu-link>
-        <span>▧</span> Скриншоты
-      </a>
-      <a class="menu-link" href="#download" data-menu-link>
-        <span>↓</span> Скачать
-      </a>
-      <a class="menu-link" href="#contacts" data-menu-link>
-        <span>✉</span> Контакты
-      </a>
-
-      <div class="menu-divider"></div>
-
       <div class="menu-label" id="menuSettingsLabel">Настройки</div>
 
       <button class="menu-action" id="langToggle" type="button">
@@ -645,7 +628,7 @@
     <!-- SCREENSHOTS RU -->
 
     <section class="card" id="card-screens-ru">
-      <h2>📸 Скриншоты</h2>
+      <h2>Скриншоты</h2>
 
       <div class="screenshots">
         <img src="images/screen1.png" alt="Главный экран" loading="lazy" />
@@ -660,7 +643,7 @@
     <!-- SCREENSHOTS EN -->
 
     <section class="card" id="card-screens-en" style="display:none;">
-      <h2>📸 Screenshots</h2>
+      <h2>Screenshots</h2>
 
       <div class="screenshots">
         <img src="images/screen1.png" alt="Main screen" loading="lazy" />
@@ -827,16 +810,9 @@
 
         langLabel.textContent = `Язык: ${lang.toUpperCase()}`;
 
-        document.getElementById("menuNavigationLabel").textContent =
-          lang === "ru" ? "Навигация" : "Navigation";
-
         document.getElementById("menuSettingsLabel").textContent =
           lang === "ru" ? "Настройки" : "Settings";
-
-        const menuLinks = document.querySelectorAll("[data-menu-link]");
-        const ruNames = ["Главная", "Скриншоты", "Скачать", "Контакты"];
-        const enNames = ["Home", "Screenshots", "Download", "Contacts"];
-
+        
         menuLinks.forEach((link, index) => {
           link.lastChild.textContent =
             " " + (lang === "ru" ? ruNames[index] : enNames[index]);
