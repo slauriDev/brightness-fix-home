@@ -3,367 +3,908 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080812" />
   <title>Brightness Fix for GSI</title>
+
   <style>
-    /* ===== CSS переменные (Material Design 3) ===== */
     :root {
-      --md-surface: #1c1b1f;
-      --md-surface-container: #2b2930;
-      --md-primary: #f8b8d0;
-      --md-on-primary: #491d32;
-      --md-secondary: #d7c2d2;
-      --md-on-surface: #e6e0e9;
-      --md-on-surface-variant: #cac4cf;
-      --md-outline: #938f99;
-      --md-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      --md-radius-card: 16px;
-    }
-    [data-theme="light"] {
-      --md-surface: #fef7ff;
-      --md-surface-container: #f0edf5;
-      --md-primary: #6750a4;
-      --md-on-primary: #ffffff;
-      --md-secondary: #625b71;
-      --md-on-surface: #1d1b20;
-      --md-on-surface-variant: #49454f;
-      --md-outline: #79747e;
-      --md-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      color-scheme: dark;
+      --bg: #080812;
+      --surface: rgba(19, 18, 35, 0.78);
+      --surface-solid: #131221;
+      --surface-hover: #201d35;
+      --text: #f1edff;
+      --text-muted: #aaa4c3;
+      --accent: #b58aff;
+      --accent-2: #7775ff;
+      --border: rgba(174, 137, 255, 0.2);
+      --glow: rgba(145, 94, 255, 0.18);
+      --shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      --radius: 20px;
+      --header-bg: rgba(10, 9, 20, 0.78);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    [data-theme="light"] {
+      color-scheme: light;
+      --bg: #f4f1fb;
+      --surface: rgba(255, 255, 255, 0.78);
+      --surface-solid: #ffffff;
+      --surface-hover: #eee8fa;
+      --text: #211b32;
+      --text-muted: #6e6680;
+      --accent: #7546c5;
+      --accent-2: #5657c9;
+      --border: rgba(112, 76, 180, 0.2);
+      --glow: rgba(130, 91, 220, 0.13);
+      --shadow: 0 12px 35px rgba(70, 50, 110, 0.1);
+      --header-bg: rgba(248, 245, 255, 0.82);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 105px;
+    }
+
     body {
-      font-family: "Google Sans", system-ui, -apple-system, sans-serif;
-      background: var(--md-surface);
-      color: var(--md-on-surface);
-      padding: 2rem 1.5rem;
-      line-height: 1.6;
-      transition: background 0.3s, color 0.3s;
       min-height: 100vh;
+      overflow-x: hidden;
+      font-family: "Google Sans", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      filter: blur(110px);
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.6;
+    }
+
+    body::before {
+      top: 100px;
+      left: -220px;
+      background: rgba(111, 69, 220, 0.22);
+    }
+
+    body::after {
+      right: -220px;
+      top: 480px;
+      background: rgba(67, 88, 220, 0.16);
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    /* ===== FIXED HEADER ===== */
+
+    .site-header {
+      position: fixed;
+      z-index: 1000;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 76px;
+      background: var(--header-bg);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 5px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      height: 100%;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .brand:hover {
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 43px;
+      height: 43px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #35245d, #242b60);
+      border: 1px solid rgba(190, 155, 255, 0.35);
+      box-shadow: 0 0 22px rgba(151, 103, 255, 0.25);
+      color: #e2ccff;
+      font-size: 23px;
+    }
+
+    .brand-name {
+      font-size: 1.08rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-subtitle {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 400;
+      margin-top: -3px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .icon-button {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .icon-button:hover {
+      background: var(--surface-hover);
+      border-color: var(--accent);
+      box-shadow: 0 0 18px var(--glow);
+    }
+
+    .menu-icon {
+      width: 21px;
+      height: 16px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-    }
-    .container { max-width: 880px; width: 100%; }
-
-    /* ===== Шапка ===== */
-    .header {
-      display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-      gap: 0.75rem;
     }
-    .badge {
-      background: var(--md-surface-container);
-      color: var(--md-on-surface-variant);
-      padding: 0.25rem 1rem;
-      border-radius: 100px;
-      font-size: 0.75rem;
-      font-weight: 500;
-      border: 1px solid var(--md-outline);
+
+    .menu-icon span {
+      display: block;
+      width: 100%;
+      height: 2px;
+      border-radius: 5px;
+      background: currentColor;
+      transition: 0.25s;
     }
-    .controls {
+
+    .menu-button[aria-expanded="true"] .menu-icon span:first-child {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .menu-button[aria-expanded="true"] .menu-icon span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-button[aria-expanded="true"] .menu-icon span:last-child {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* ===== DROPDOWN MENU ===== */
+
+    .menu-panel {
+      position: absolute;
+      top: 87px;
+      right: max(24px, calc((100% - 1052px) / 2));
+      width: 260px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--surface-solid);
+      box-shadow: var(--shadow), 0 0 35px var(--glow);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px) scale(0.98);
+      transform-origin: top right;
+      transition: 0.2s ease;
+    }
+
+    .menu-panel.open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+
+    .menu-label {
+      padding: 8px 12px 5px;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .menu-link,
+    .menu-action {
+      width: 100%;
       display: flex;
-      gap: 0.5rem;
       align-items: center;
-      flex-wrap: wrap;
-    }
-    .theme-toggle, .lang-toggle {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      gap: 11px;
+      padding: 11px 12px;
+      border: none;
+      border-radius: 11px;
+      background: transparent;
+      color: var(--text);
+      font-size: 0.92rem;
+      text-align: left;
       cursor: pointer;
-      background: var(--md-surface-container);
-      padding: 0.35rem 0.8rem 0.35rem 0.5rem;
-      border-radius: 100px;
-      border: 1px solid var(--md-outline);
-      user-select: none;
-      transition: background 0.2s;
-    }
-    .theme-toggle:hover, .lang-toggle:hover {
-      background: var(--md-outline);
+      transition: 0.2s;
     }
 
-    /* ===== Карточка ===== */
+    .menu-link:hover,
+    .menu-action:hover {
+      background: var(--surface-hover);
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .menu-divider {
+      height: 1px;
+      margin: 9px 4px;
+      background: var(--border);
+    }
+
+    /* ===== PAGE CONTENT ===== */
+
+    .container {
+      width: min(880px, calc(100% - 40px));
+      margin: 0 auto;
+      padding-top: 112px;
+    }
+
     .card {
-      background: var(--md-surface-container);
-      border-radius: var(--md-radius-card);
-      padding: 2rem;
-      margin-bottom: 1.5rem;
-      box-shadow: var(--md-shadow);
-      transition: background 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 22px;
+      padding: 30px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: var(--shadow);
+      transition: border-color 0.25s, box-shadow 0.25s;
     }
 
-    h1 { font-size: 2.2rem; font-weight: 600; letter-spacing: -0.3px; }
-    h2 { font-size: 1.4rem; font-weight: 500; margin: 1.5rem 0 0.75rem 0; }
-    h2:first-of-type { margin-top: 0; }
-    p { margin-bottom: 1rem; color: var(--md-on-surface-variant); }
-    .accent-text { color: var(--md-primary); font-weight: 500; }
-    a { color: var(--md-primary); text-decoration: none; font-weight: 500; }
-    a:hover { text-decoration: underline; }
+    .card:hover {
+      border-color: rgba(174, 137, 255, 0.4);
+      box-shadow: var(--shadow), 0 0 24px var(--glow);
+    }
+
+    .hero {
+      padding: 38px 34px;
+    }
+
+    .root-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 12px;
+      margin-bottom: 18px;
+      border: 1px solid rgba(181, 138, 255, 0.35);
+      border-radius: 100px;
+      background: rgba(145, 94, 255, 0.1);
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+    }
+
+    h1 {
+      margin-bottom: 15px;
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      line-height: 1.2;
+      font-weight: 750;
+      letter-spacing: -1.2px;
+      background: linear-gradient(100deg, var(--text), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    h2 {
+      margin: 0 0 15px;
+      font-size: 1.4rem;
+      font-weight: 650;
+      letter-spacing: -0.3px;
+    }
+
+    p {
+      margin-bottom: 15px;
+      color: var(--text-muted);
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    strong {
+      color: var(--text);
+      font-weight: 650;
+    }
+
+    .accent-text {
+      color: var(--accent);
+      font-weight: 650;
+    }
+
+    /* ===== SCREENSHOTS ===== */
 
     .screenshots {
       display: flex;
-      gap: 1rem;
       flex-wrap: wrap;
-      margin: 1rem 0 0.5rem 0;
+      gap: 18px;
+      margin: 18px 0 10px;
     }
+
     .screenshots img {
-      max-width: 180px;
       width: 100%;
-      border-radius: var(--md-radius-card);
-      border: 1px solid var(--md-outline);
-      background: var(--md-surface);
-      transition: transform 0.15s;
+      max-width: 180px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: var(--surface-solid);
+      box-shadow: 0 0 18px var(--glow);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    .screenshots img:hover { transform: scale(1.02); }
+
+    .screenshots img:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 0 28px var(--glow);
+    }
+
+    .small-note {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== DOWNLOAD BUTTON ===== */
 
     .btn {
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      background: var(--md-primary);
-      color: var(--md-on-primary);
-      padding: 0.8rem 2rem;
-      border-radius: 100px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      transition: filter 0.2s, box-shadow 0.2s;
-      box-shadow: 0 2px 8px rgba(103, 80, 164, 0.3);
+      justify-content: center;
+      gap: 10px;
+      margin-top: 5px;
+      padding: 13px 24px;
+      border: 1px solid rgba(210, 185, 255, 0.35);
+      border-radius: 13px;
+      background: linear-gradient(110deg, #8152cf, #5b63cf);
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 0 22px rgba(128, 91, 220, 0.25);
+      transition: 0.2s;
     }
+
     .btn:hover {
-      filter: brightness(1.08);
-      box-shadow: 0 4px 16px rgba(103, 80, 164, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(128, 91, 220, 0.42);
       text-decoration: none;
+      filter: brightness(1.1);
     }
+
+    /* ===== CONTACTS ===== */
 
     .contacts {
       display: flex;
       flex-wrap: wrap;
-      gap: 1.5rem;
-      margin-top: 0.5rem;
+      gap: 12px;
+      margin-top: 18px;
     }
+
+    .contacts a {
+      display: inline-flex;
+      align-items: center;
+      padding: 9px 13px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: var(--surface-solid);
+      transition: 0.2s;
+    }
+
+    .contacts a:hover {
+      border-color: var(--accent);
+      background: var(--surface-hover);
+      box-shadow: 0 0 15px var(--glow);
+      text-decoration: none;
+    }
+
+    /* ===== FOOTER ===== */
+
     .footer {
-      margin-top: 2.5rem;
+      margin: 38px 0 25px;
+      padding: 22px 10px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
       font-size: 0.85rem;
-      color: var(--md-outline);
-      border-top: 1px solid var(--md-outline);
-      padding-top: 1.5rem;
       text-align: center;
     }
+
     @media (max-width: 600px) {
-      body { padding: 1rem; }
-      .card { padding: 1.25rem; }
-      h1 { font-size: 1.7rem; }
-      .screenshots img { max-width: 140px; }
-      .header { flex-direction: column; align-items: stretch; }
-      .controls { justify-content: flex-end; }
+      .site-header {
+        height: 68px;
+      }
+
+      .header-inner {
+        padding: 0 16px;
+      }
+
+      .brand-icon {
+        width: 39px;
+        height: 39px;
+      }
+
+      .brand-name {
+        font-size: 0.98rem;
+      }
+
+      .container {
+        width: calc(100% - 28px);
+        padding-top: 94px;
+      }
+
+      .card {
+        padding: 21px;
+        border-radius: 17px;
+      }
+
+      .hero {
+        padding: 25px 21px;
+      }
+
+      .menu-panel {
+        top: 77px;
+        right: 14px;
+        width: min(280px, calc(100vw - 28px));
+      }
+
+      .screenshots img {
+        max-width: 135px;
+      }
+
+      .contacts {
+        flex-direction: column;
+      }
+
+      .contacts a {
+        width: fit-content;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
     }
   </style>
 </head>
+
 <body>
 
-<div class="container">
+  <!-- ===== FIXED HEADER ===== -->
 
-  <!-- Шапка -->
-  <div class="header">
-    <span class="badge">⚙️ root required</span>
-    <div class="controls">
-      <div class="lang-toggle" id="langToggle" role="button" tabindex="0">
-        <span id="langIcon">🌐</span>
-        <span class="label" id="langLabel">RU</span>
+  <header class="site-header">
+    <div class="header-inner">
+
+      <a class="brand" href="#top" aria-label="Brightness Fix — главная">
+        <div class="brand-icon">☀</div>
+        <div>
+          <div class="brand-name">Brightness Fix</div>
+          <span class="brand-subtitle">Android utility</span>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <button
+          class="icon-button menu-button"
+          id="menuButton"
+          type="button"
+          aria-label="Открыть меню"
+          aria-expanded="false"
+          aria-controls="menuPanel"
+        >
+          <span class="menu-icon" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </button>
       </div>
-      <div class="theme-toggle" id="themeToggle" role="button" tabindex="0">
-        <span id="themeIcon">🌙</span>
-        <span class="label" id="themeLabel"></span>
-      </div>
+
     </div>
-  </div>
 
-  <!-- Карточка 1: Описание (русский) -->
-  <div class="card" id="card-desc-ru">
-    <div class="card-content">
+    <nav class="menu-panel" id="menuPanel" aria-label="Главное меню">
+      <div class="menu-label" id="menuNavigationLabel">Навигация</div>
+
+      <a class="menu-link" href="#top" data-menu-link>
+        <span>⌂</span> Главная
+      </a>
+      <a class="menu-link" href="#screenshots" data-menu-link>
+        <span>▧</span> Скриншоты
+      </a>
+      <a class="menu-link" href="#download" data-menu-link>
+        <span>↓</span> Скачать
+      </a>
+      <a class="menu-link" href="#contacts" data-menu-link>
+        <span>✉</span> Контакты
+      </a>
+
+      <div class="menu-divider"></div>
+
+      <div class="menu-label" id="menuSettingsLabel">Настройки</div>
+
+      <button class="menu-action" id="langToggle" type="button">
+        <span>🌐</span>
+        <span id="langLabel">Язык: RU</span>
+      </button>
+
+      <button class="menu-action" id="themeToggle" type="button">
+        <span id="themeIcon">☾</span>
+        <span id="themeLabel">Тема: Dark</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+
+  <main class="container" id="top">
+
+    <!-- DESCRIPTION RU -->
+
+    <section class="card hero" id="card-desc-ru">
+      <div class="root-badge">⚙ ROOT REQUIRED</div>
+
       <h1>Brightness Fix for GSI</h1>
+
       <p>
-        Приложение создано для решения проблемы с управлением яркостью на устройствах с <strong>GSI-прошивками</strong>.
-        На многих кастомных системах стандартный ползунок яркости либо работает некорректно, либо вообще не влияет на подсветку.
-        Это приложение позволяет вручную управлять яркостью напрямую через системный файл, используя <span class="accent-text">root-права</span>.
+        Приложение создано для решения проблемы с управлением яркостью
+        на устройствах с <strong>GSI-прошивками</strong>.
+        На многих кастомных системах стандартный ползунок яркости либо
+        работает некорректно, либо вообще не влияет на подсветку.
+        Это приложение позволяет вручную управлять яркостью напрямую
+        через системный файл, используя
+        <span class="accent-text">root-права</span>.
       </p>
+
       <p>
         <strong>Полностью бесплатно</strong> · Без рекламы ·
-        <a href="https://github.com/zxcslauri/brightness-fix" target="_blank">Открытый код</a>
+        <a href="https://github.com/zxcslauri/brightness-fix" target="_blank" rel="noopener noreferrer">
+          Открытый код
+        </a>
         (репозиторий на GitHub)
       </p>
-    </div>
-  </div>
+    </section>
 
-  <!-- Карточка 1: Описание (английский) -->
-  <div class="card" id="card-desc-en" style="display:none;">
-    <div class="card-content">
+    <!-- DESCRIPTION EN -->
+
+    <section class="card hero" id="card-desc-en" style="display:none;">
+      <div class="root-badge">⚙ ROOT REQUIRED</div>
+
       <h1>Brightness Fix for GSI</h1>
+
       <p>
-        An app designed to fix brightness control issues on devices with <strong>GSI custom ROMs</strong>.
-        On many custom systems, the standard brightness slider either works incorrectly or doesn't affect the backlight at all.
-        This app allows you to manually control brightness directly via the system file using <span class="accent-text">root privileges</span>.
+        An app designed to fix brightness control issues on devices with
+        <strong>GSI custom ROMs</strong>.
+        On many custom systems, the standard brightness slider either works
+        incorrectly or doesn't affect the backlight at all.
+        This app allows you to manually control brightness directly via
+        the system file using
+        <span class="accent-text">root privileges</span>.
       </p>
+
       <p>
         <strong>Completely free</strong> · No ads ·
-        <a href="https://github.com/zxcslauri/brightness-fix" target="_blank">Open source</a>
+        <a href="https://github.com/zxcslauri/brightness-fix" target="_blank" rel="noopener noreferrer">
+          Open source
+        </a>
         (GitHub repository)
       </p>
-    </div>
-  </div>
+    </section>
 
-  <!-- Карточка 2: Скриншоты -->
-  <div class="card" id="card-screens-ru">
-    <div class="card-content">
+    <!-- SCREENSHOTS RU -->
+
+    <section class="card" id="card-screens-ru">
       <h2>📸 Скриншоты</h2>
+
       <div class="screenshots">
         <img src="images/screen1.png" alt="Главный экран" loading="lazy" />
         <img src="images/screen2.png" alt="Главный экран 2" loading="lazy" />
       </div>
-      <p style="font-size:0.9rem; color: var(--md-outline); margin-top:0.5rem;">
+
+      <p class="small-note">
         Внешний вид может отличаться в зависимости от версии.
       </p>
-    </div>
-  </div>
+    </section>
 
-  <!-- Карточка 2: Скриншоты (английский) -->
-  <div class="card" id="card-screens-en" style="display:none;">
-    <div class="card-content">
+    <!-- SCREENSHOTS EN -->
+
+    <section class="card" id="card-screens-en" style="display:none;">
       <h2>📸 Screenshots</h2>
+
       <div class="screenshots">
         <img src="images/screen1.png" alt="Main screen" loading="lazy" />
-        <img src="images/screen2.png" alt="Main Screen 2" loading="lazy" />
+        <img src="images/screen2.png" alt="Main screen 2" loading="lazy" />
       </div>
-      <p style="font-size:0.9rem; color: var(--md-outline); margin-top:0.5rem;">
+
+      <p class="small-note">
         UI may vary depending on the version.
       </p>
-    </div>
-  </div>
+    </section>
 
-  <!-- Карточка 3: Скачать -->
-  <div class="card" id="card-dl-ru">
-    <div class="card-content">
+    <!-- DOWNLOAD RU -->
+
+    <section class="card" id="card-dl-ru">
       <h2>⬇️ Скачать</h2>
+
       <p>
         Последняя стабильная версия доступна для скачивания ниже.
         Установите APK-файл на своё устройство.
       </p>
-      <a href="https://github.com/zxcslauri/brightness-fix/releases/latest" class="btn">
-        <span>📦</span> Скачать APK
-      </a>
-    </div>
-  </div>
 
-  <!-- Карточка 3: Скачать (английский) -->
-  <div class="card" id="card-dl-en" style="display:none;">
-    <div class="card-content">
+      <a
+        href="https://github.com/zxcslauri/brightness-fix/releases/latest"
+        class="btn"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        📦 Скачать APK
+      </a>
+    </section>
+
+    <!-- DOWNLOAD EN -->
+
+    <section class="card" id="card-dl-en" style="display:none;">
       <h2>⬇️ Download</h2>
+
       <p>
         The latest stable version is available below.
         Install the APK file on your device.
       </p>
-      <a href="https://github.com/zxcslauri/brightness-fix/releases/latest" class="btn">
-        <span>📦</span> Download APK
-      </a>
-    </div>
-  </div>
 
-  <!-- Карточка 4: Контакты -->
-  <div class="card" id="card-contacts-ru">
-    <div class="card-content">
+      <a
+        href="https://github.com/zxcslauri/brightness-fix/releases/latest"
+        class="btn"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        📦 Download APK
+      </a>
+    </section>
+
+    <!-- CONTACTS RU -->
+
+    <section class="card" id="card-contacts-ru">
       <h2>📬 Контакты</h2>
+
       <p>
         По вопросам, предложениям и багам — пишите:
       </p>
-      <div class="contacts">
-        <a href="https://t.me/brightnessfix" target="_blank">💬 Telegram-канал</a>
-        <a href="https://4pda.to/forum/index.php?showuser=11776669" target="_blank">📌 4PDA</a>
-        <a href="https://github.com/zxcslauri/brightness-fix/issues" target="_blank">🐛 GitHub Issues</a>
-      </div>
-    </div>
-  </div>
 
-  <!-- Карточка 4: Контакты (английский) -->
-  <div class="card" id="card-contacts-en" style="display:none;">
-    <div class="card-content">
+      <div class="contacts">
+        <a href="https://t.me/brightnessfix" target="_blank" rel="noopener noreferrer">
+          💬 Telegram-канал
+        </a>
+        <a href="https://4pda.to/forum/index.php?showuser=11776669" target="_blank" rel="noopener noreferrer">
+          📌 4PDA
+        </a>
+        <a href="https://github.com/zxcslauri/brightness-fix/issues" target="_blank" rel="noopener noreferrer">
+          🐛 GitHub Issues
+        </a>
+      </div>
+    </section>
+
+    <!-- CONTACTS EN -->
+
+    <section class="card" id="card-contacts-en" style="display:none;">
       <h2>📬 Contacts</h2>
+
       <p>
         For questions, suggestions, and bugs:
       </p>
+
       <div class="contacts">
-        <a href="https://t.me/brightnessfix" target="_blank">💬 Telegram channel</a>
-        <a href="https://4pda.to/forum/index.php?showuser=11776669" target="_blank">📌 4PDA</a>
-        <a href="https://github.com/zxcslauri/brightness-fix/issues" target="_blank">🐛 GitHub Issues</a>
+        <a href="https://t.me/brightnessfix" target="_blank" rel="noopener noreferrer">
+          💬 Telegram channel
+        </a>
+        <a href="https://4pda.to/forum/index.php?showuser=11776669" target="_blank" rel="noopener noreferrer">
+          📌 4PDA
+        </a>
+        <a href="https://github.com/zxcslauri/brightness-fix/issues" target="_blank" rel="noopener noreferrer">
+          🐛 GitHub Issues
+        </a>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <div class="footer">
-    Brightness Fix for GSI · 2026 · Open Source (MIT)
-  </div>
+    <footer class="footer">
+      Brightness Fix for GSI · 2026 · Open Source (MIT)
+    </footer>
 
-</div>
+  </main>
 
-<script>
-  (function() {
-    // ===== Переключатель темы =====
-    const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = document.getElementById('themeIcon');
-    const html = document.documentElement;
+  <script>
+    (() => {
+      const html = document.documentElement;
 
-    function updateTheme(theme) {
-      html.setAttribute('data-theme', theme);
-      themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
-      localStorage.setItem('theme', theme);
-    }
+      // ===== THEME =====
 
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      updateTheme(savedTheme);
-    } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      updateTheme(prefersDark ? 'dark' : 'light');
-    }
+      const themeToggle = document.getElementById("themeToggle");
+      const themeIcon = document.getElementById("themeIcon");
+      const themeLabel = document.getElementById("themeLabel");
 
-    themeToggle.addEventListener('click', function() {
-      const current = html.getAttribute('data-theme');
-      updateTheme(current === 'dark' ? 'light' : 'dark');
-    });
+      function updateTheme(theme) {
+        html.setAttribute("data-theme", theme);
 
-    // ===== Переключатель языка =====
-    const langToggle = document.getElementById('langToggle');
-    const langLabel = document.getElementById('langLabel');
-    let currentLang = localStorage.getItem('lang') || 'ru';
+        themeIcon.textContent = theme === "dark" ? "☾" : "☀";
+        themeLabel.textContent =
+          theme === "dark" ? "Тема: Dark" : "Тема: Light";
 
-    function updateLanguage(lang) {
-      const pairs = {
-        'card-desc': ['ru', 'en'],
-        'card-screens': ['ru', 'en'],
-        'card-dl': ['ru', 'en'],
-        'card-contacts': ['ru', 'en']
-      };
-
-      for (const [base, langs] of Object.entries(pairs)) {
-        document.getElementById(`${base}-${langs[0]}`).style.display = (lang === 'ru') ? 'block' : 'none';
-        document.getElementById(`${base}-${langs[1]}`).style.display = (lang === 'en') ? 'block' : 'none';
+        localStorage.setItem("theme", theme);
       }
 
-      langLabel.textContent = (lang === 'ru') ? 'RU' : 'EN';
-      localStorage.setItem('lang', lang);
-      currentLang = lang;
-    }
+      const savedTheme = localStorage.getItem("theme");
 
-    langToggle.addEventListener('click', function() {
-      updateLanguage(currentLang === 'ru' ? 'en' : 'ru');
-    });
+      if (savedTheme === "dark" || savedTheme === "light") {
+        updateTheme(savedTheme);
+      } else {
+        updateTheme(
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light"
+        );
+      }
 
-    updateLanguage(currentLang);
-  })();
-</script>
+      themeToggle.addEventListener("click", () => {
+        updateTheme(
+          html.getAttribute("data-theme") === "dark" ? "light" : "dark"
+        );
+      });
+
+      // ===== LANGUAGE =====
+
+      const langToggle = document.getElementById("langToggle");
+      const langLabel = document.getElementById("langLabel");
+
+      let currentLang = localStorage.getItem("lang") || "ru";
+
+      const languagePairs = [
+        ["card-desc-ru", "card-desc-en"],
+        ["card-screens-ru", "card-screens-en"],
+        ["card-dl-ru", "card-dl-en"],
+        ["card-contacts-ru", "card-contacts-en"]
+      ];
+
+      function updateLanguage(lang) {
+        currentLang = lang;
+
+        languagePairs.forEach(([ruId, enId]) => {
+          document.getElementById(ruId).style.display =
+            lang === "ru" ? "" : "none";
+
+          document.getElementById(enId).style.display =
+            lang === "en" ? "" : "none";
+        });
+
+        langLabel.textContent = `Язык: ${lang.toUpperCase()}`;
+
+        document.getElementById("menuNavigationLabel").textContent =
+          lang === "ru" ? "Навигация" : "Navigation";
+
+        document.getElementById("menuSettingsLabel").textContent =
+          lang === "ru" ? "Настройки" : "Settings";
+
+        const menuLinks = document.querySelectorAll("[data-menu-link]");
+        const ruNames = ["Главная", "Скриншоты", "Скачать", "Контакты"];
+        const enNames = ["Home", "Screenshots", "Download", "Contacts"];
+
+        menuLinks.forEach((link, index) => {
+          link.lastChild.textContent =
+            " " + (lang === "ru" ? ruNames[index] : enNames[index]);
+        });
+
+        themeLabel.textContent =
+          html.getAttribute("data-theme") === "dark"
+            ? (lang === "ru" ? "Тема: Dark" : "Theme: Dark")
+            : (lang === "ru" ? "Тема: Light" : "Theme: Light");
+
+        document.documentElement.lang = lang;
+        localStorage.setItem("lang", lang);
+      }
+
+      langToggle.addEventListener("click", () => {
+        updateLanguage(currentLang === "ru" ? "en" : "ru");
+      });
+
+      updateLanguage(currentLang);
+
+      // ===== BURGER MENU =====
+
+      const menuButton = document.getElementById("menuButton");
+      const menuPanel = document.getElementById("menuPanel");
+
+      function closeMenu() {
+        menuPanel.classList.remove("open");
+        menuButton.setAttribute("aria-expanded", "false");
+        menuButton.setAttribute(
+          "aria-label",
+          currentLang === "ru" ? "Открыть меню" : "Open menu"
+        );
+      }
+
+      function toggleMenu() {
+        const isOpen = menuPanel.classList.toggle("open");
+
+        menuButton.setAttribute("aria-expanded", String(isOpen));
+        menuButton.setAttribute(
+          "aria-label",
+          isOpen
+            ? (currentLang === "ru" ? "Закрыть меню" : "Close menu")
+            : (currentLang === "ru" ? "Открыть меню" : "Open menu")
+        );
+      }
+
+      menuButton.addEventListener("click", toggleMenu);
+
+      document.querySelectorAll("[data-menu-link]").forEach(link => {
+        link.addEventListener("click", closeMenu);
+      });
+
+      document.addEventListener("click", event => {
+        if (
+          !menuPanel.contains(event.target) &&
+          !menuButton.contains(event.target)
+        ) {
+          closeMenu();
+        }
+      });
+
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+          closeMenu();
+        }
+      });
+    })();
+  </script>
 
 </body>
 </html>
